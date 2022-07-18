@@ -2,7 +2,7 @@ version: "3"
 services:
   dbpostgres:
     container_name: bahmni
-    image: imransharkar1481/bahmni-latest 
+    image: imransharkar1481/bahmni-latest:o.93v 
     privileged: true
     restart: always
     volumes:
