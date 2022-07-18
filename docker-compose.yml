@@ -1,0 +1,33 @@
+version: "3"
+services:
+  dbpostgres:
+    container_name: bahmni
+    image: imransharkar1481/bahmni-latest 
+    privileged: true
+    restart: always
+    volumes:
+      - ./entry:/entry
+
+    command:
+      - /bin/bash
+      - -c
+      - |
+         bash /entry/docker-entrypoint.sh
+         sleep infinity
+    ports:
+    - "80:80"
+    - "443:443"
+    - "8050:8050"   
+    networks:
+      test:
+        ipv4_address: '10.2.0.108'
+  
+volumes:
+  entry:
+networks:
+  test:
+    ipam:
+      driver: default
+      config:
+        - subnet: 10.2.0.0/24
+

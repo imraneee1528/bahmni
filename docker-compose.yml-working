@@ -1,0 +1,31 @@
+version: "3"
+services:
+  dbpostgres:
+    container_name: bahmni
+    image: bahmni
+    privileged: true
+    entrypoint: ["/usr/sbin/init"] 
+    restart: always
+    #volumes:
+    command:
+      - /bin/bash
+      - -c
+      - |
+         sleep infinity
+    ports:
+    - "80:80"
+    - "443:443"
+    - "8050:8050"   
+    networks:
+      test:
+        ipv4_address: '10.2.0.108'
+  
+#volumes:
+  
+networks:
+  test:
+    ipam:
+      driver: default
+      config:
+        - subnet: 10.2.0.0/24
+

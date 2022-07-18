@@ -1,0 +1,26 @@
+FROM  centos:centos7.9.2009
+LABEL maintainer=imranjuit@gmail.com
+ENV TZ=Asia/Dhaka
+RUN  ln -snf /usr/share/zoneinfo/$TZ /etc/localtime \
+    && echo $TZ > /etc/timezone
+ENTRYPOINT  ["/usr/sbin/init"]
+RUN yum update -y && yum install -y https://kojipkgs.fedoraproject.org//packages/zlib/1.2.11/19.fc30/x86_64/zlib-1.2.11-19.fc30.x86_64.rpm && yum install -y epel-release && yum install sudo wget nano -y && yum install -y --enablerepo="epel" python-pip && pip install  pip==20.2.2
+RUN yum update -y && yum -y install openssh openssh-server openssh-clients sudo initscripts
+# Generate keys
+RUN ssh-keygen -q -N "" -t rsa -f /etc/ssh/ssh_host_rsa_key
+RUN ssh-keygen -q -N "" -t rsa -f /root/.ssh/id_rsa
+RUN cp /root/.ssh/id_rsa.pub /root/.ssh/authorized_keys
+RUN pip install babel==v1.0 python-stdnum urllib3==1.21.1 idna==2.5 chardet==3.0.2 certifi==2017.4.17 qrcode pyserial pypdf python-chart psycogreen passlib ofxparse requests
+RUN yum install -y https://repo.mybahmni.org/releases/bahmni-installer-0.93-219.noarch.rpm
+RUN rm -f /opt/pgdg-redhat-repo-* && cd /opt && wget https://yum.postgresql.org/common/redhat/rhel-7-x86_64/pgdg-redhat-repo-42.0-23.noarch.rpm --no-check-certificate
+COPY setup.yml  /etc/bahmni-installer/setup.yml  
+COPY  bahmni-installer /opt/bahmni-installer
+RUN curl --silent --location https://dl.yarnpkg.com/rpm/yarn.repo | sudo tee /etc/yum.repos.d/yarn.repo
+RUN sudo rpm --import https://dl.yarnpkg.com/rpm/pubkey.gpg
+RUN yum install -y yarn
+ENV BAHMNI_INVENTORY=local
+EXPOSE 22
+EXPOSE 8050
+EXPOSE 443
+EXPOSE 80
+EXPOSE 8069
